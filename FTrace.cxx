@@ -5,14 +5,14 @@ FTrace::FTrace() {
   fTime = 0;
 }
 
-FTrace::~Ftrace(){
+FTrace::~FTrace(){
 
 }
 
-FTrace::ComputeSignal(){
+void FTrace::ComputeSignal(){
 
 }
 
-FTrace::ComputeTime(){
+void FTrace::ComputeTime(){
 
 }
