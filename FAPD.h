@@ -7,11 +7,9 @@ class FAPD: public FTrace{
   FAPD();
   ~FAPD();
   double Energy() {return fSignal*fGain;}
-
+  void SetGain(double g) {fGain=g;}
  protected:
   double fGain;
-  virtual void ComputeSignal();
-  virtual void ComputeTime();
 };
 
 #endif /*__FAPD_H__*/

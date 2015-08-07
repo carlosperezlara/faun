@@ -7,11 +7,3 @@ FAPD::FAPD(){
 FAPD::~FAPD(){
 
 }
-
-void ComputeSignal(){
-  
-}
-
-void ComputeTime(){
-  
-}

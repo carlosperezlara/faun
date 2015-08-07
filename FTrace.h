@@ -6,15 +6,18 @@ class FTrace {
  public:
   FTrace();
   ~FTrace();
-  double Signal() {return fSignal;}
-  double Time() {return fTime;}
+  void Fill(double val) { fData.push_back(val); }
+  void Reset() {fData.clear(); }
+  double Signal() { return fSignal; }
+  void SetRange(int a,int b,int c,int d) {
+    fRange[0]=a; fRange[1]=b; fRange[2]=c; fRange[3]=d;
+  }
+  virtual void ComputeSignal(std::vector<double>);
 
  protected:
-  std::vector<double> fVoltage;
-  void ComputeSignal();
-  void ComputeTime();
+  std::vector<double> fData;
+  int fRange[4];
   double fSignal;
-  double fTime;
 };
 
 #endif /*__FTRACE_H__*/
