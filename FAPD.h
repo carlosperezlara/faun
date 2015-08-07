@@ -1,6 +1,8 @@
+#ifndef __FAPD_H__
+#define __FAPD_H__
 #include "FTrace.h"
 
-class FAPD::FTrace {
+class FAPD: public FTrace{
  public:
   FAPD();
   ~FAPD();
@@ -8,6 +10,8 @@ class FAPD::FTrace {
 
  protected:
   double fGain;
-  virtual double ComputeSignal();
-  virtual double ComputeTime();
+  virtual void ComputeSignal();
+  virtual void ComputeTime();
 };
+
+#endif /*__FAPD_H__*/

@@ -8,10 +8,10 @@ FAPD::~FAPD(){
 
 }
 
-double ComputeSignal(){
-
+void ComputeSignal(){
+  
 }
 
-double ComputeTime(){
-
+void ComputeTime(){
+  
 }
