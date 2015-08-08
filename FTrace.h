@@ -16,7 +16,7 @@ class FTrace {
 
  protected:
   std::vector<double> fData;
-  int fRange[4];
+  unsigned int fRange[4];
   double fSignal;
 };
 
