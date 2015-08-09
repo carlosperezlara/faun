@@ -7,5 +7,6 @@
 #pragma link C++ class FAPD+;
 #pragma link C++ class FMP+;
 #pragma link C++ class FDetectorMPC+;
+#pragma link C++ class FMaze+;
 
 #endif /* __CINT__ */

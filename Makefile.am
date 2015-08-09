@@ -9,18 +9,20 @@ noinst_HEADERS = \
   FaunLinkDef.h 
 
 include_HEADERS = \
-	FTMUnpacker.h \
+	FUnpacker.h \
 	FTrace.h \
 	FAPD.h \
 	FMP.h \
-	FDetectorMPC.h
+	FDetectorMPC.h \
+	FMaze.h
 
 libFaun_la_SOURCES = \
-	FTMUnpacker.cxx \
+	FUnpacker.cxx \
 	FTrace.cxx \
 	FAPD.cxx \
 	FMP.cxx \
 	FDetectorMPC.cxx \
+	FMaze.cxx \
 	Faun_Dict.C
 
 libFaun_la_LDFLAGS =  -L$(ONLINE_MAIN)/lib -L$(OFFLINE_MAIN)/lib -L$(ROOTSYS)/lib -lpmonitor -fPIC
@@ -34,11 +36,12 @@ libFaun_la_LIBADD = \
  -lGpad -lHist -lGraf -lGraf3d -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lRIO -lNet -lThread -lCore -lCint -lm -ldl -lSpectrum
 
 Faun_Dict.C: \
-	FTMUnpacker.h \
+	FUnpacker.h \
 	FTrace.h \
 	FAPD.h \
 	FMP.h \
 	FDetectorMPC.h \
+	FMaze.h \
 	FaunLinkDef.h
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 

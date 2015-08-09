@@ -13,6 +13,7 @@ class FTrace {
     fRange[0]=a; fRange[1]=b; fRange[2]=c; fRange[3]=d;
   }
   virtual void ComputeSignal(std::vector<double>);
+  double GetDataSlice(unsigned int idx) {return idx<fData.size()?fData[idx]:0;}
 
  protected:
   std::vector<double> fData;
