@@ -20,7 +20,7 @@ class FDetectorMPC{
   double CentroidX();
   double CentroidY();
   void ReadEnergy();
-  void InputGains(char *);
+  void InputGains(const char *);
   void Reset();
   void Dump();
   void DoQA();

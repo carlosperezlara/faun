@@ -16,7 +16,7 @@ int FTrace::ComputeSignal(std::vector<double> noise, double residual){
   if(fRange[1]>fRange[3]) return 9999;
   if(fData.size()<fRange[3]-1) return 9999;
   if(fData.size()<noise.size()) return 9999;
-  double a;
+  double a = 0;
   for( std::vector<double>::size_type i = fRange[0]; i != fRange[1]; ++i )
     a  += fData[i] - noise[i];
   double b = 0;

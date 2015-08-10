@@ -5,7 +5,7 @@
 class FTrace {
  public:
   FTrace();
-  ~FTrace();
+  virtual ~FTrace();
   void Fill(double val) { fData.push_back(val); }
   void Reset() {fData.clear(); }
   double Signal() { return fSignal; }

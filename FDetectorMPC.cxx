@@ -183,7 +183,7 @@ double FDetectorMPC::CentroidY() {
   return x/en;
 }
 
-void FDetectorMPC::InputGains(char *file) {
+void FDetectorMPC::InputGains(const char *file) {
   std::ifstream calib;
   calib.open(file);
   double tmp;
