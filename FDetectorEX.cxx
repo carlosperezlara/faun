@@ -7,14 +7,16 @@
 #include "FMP.h"
 
 #include "TList.h"
-#include "TH1D.h"
-#include "TH2D.h"
-#include "TProfile.h"
 
 FDetectorEX::FDetectorEX() {
 }
 
 FDetectorEX::~FDetectorEX() {
+}
+
+TList* FDetector::Init(){ //FDetector has a funtion named Init which returns TList
+  TList *myQA = new TList();
+  return myQA;
 }
 
 void FDetectorEX::Dump() {
