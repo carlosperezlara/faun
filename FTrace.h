@@ -12,7 +12,7 @@ class FTrace {
   void SetRange(int a,int b,int c,int d) {
     fRange[0]=a; fRange[1]=b; fRange[2]=c; fRange[3]=d;
   }
-  virtual void ComputeSignal(std::vector<double>);
+  virtual int ComputeSignal(std::vector<double>,double res=0);
   double GetDataSlice(unsigned int idx) {return idx<fData.size()?fData[idx]:0;}
 
  protected:

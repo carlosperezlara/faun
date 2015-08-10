@@ -38,5 +38,7 @@ void FMaze::Reset() {
 
 void FMaze::Exec() {
   fMPC->ReadEnergy();
+  if(fMPC->Corrupt()) return;
+
   fMPC->DoQA();
 }

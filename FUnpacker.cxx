@@ -46,9 +46,11 @@ int process_event (Event * e) {
   int thisRun = e->getRunNumber();
   static int skipentries=20;
   if(skipentries>0) {
-    cout << " Skipping 20 events." << endl; 
+    if(skipentries==20) cout << "SKIPPING FIRST: ";
+    cout << "X";
     skipentries--;
     //if(e->getEvtSequence() < 20 && e->getEvtType()==1) return 0;
+    if(skipentries==0) cout << "EVENTS." << endl;
     return 0;
   }
   // COUNTING

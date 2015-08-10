@@ -9,21 +9,19 @@ FTrace::FTrace() {
 FTrace::~FTrace(){
 }
 
-void FTrace::ComputeSignal(std::vector<double> noise){
+int FTrace::ComputeSignal(std::vector<double> noise, double residual){
   fSignal = -1;
-  if(fRange[0]>fRange[1]) return;
-  if(fRange[2]>fRange[3]) return;
-  if(fRange[1]>fRange[3]) return;
-  if(fData.size()<fRange[3]-1) return;
-  if(fData.size()<noise.size()) return;
-  double a = 0;
+  if(fRange[0]>fRange[1]) return 9999;
+  if(fRange[2]>fRange[3]) return 9999;
+  if(fRange[1]>fRange[3]) return 9999;
+  if(fData.size()<fRange[3]-1) return 9999;
+  if(fData.size()<noise.size()) return 9999;
+  double a;
   for( std::vector<double>::size_type i = fRange[0]; i != fRange[1]; ++i )
     a  += fData[i] - noise[i];
-  a = a / (fRange[1]-fRange[0]);
   double b = 0;
   for( std::vector<double>::size_type i = fRange[2]; i != fRange[3]; ++i )
     b  += fData[i] - noise[i];
-  b = b / (fRange[3]-fRange[2]);
-  fSignal = b - a;
-  return;
+  fSignal = b/(fRange[3]-fRange[2]) - a/(fRange[1]-fRange[0]) - residual;
+  return a;
 }

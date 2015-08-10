@@ -24,21 +24,29 @@ class FDetectorMPC{
   void Reset();
   void Dump();
   void DoQA();
+  bool Corrupt() {return fCorrupt;}
 
  protected:
   std::vector<FAPD*> fCrystals;
   std::vector<double> fCrystalX;
   std::vector<double> fCrystalY;
-  std::vector<double> fCommonNoise;
+  std::vector<double> fCommonNoise0;
+  double fCommonNoise1;
+  bool fCorrupt;
   double fEnergy;
   TH2D *fQA_APDS;
   TH2D *fQA_SIGNALS;
   TH2D *fQA_ENERGIES;
   TH2D *fQA_CENTROID;
-  TH1D *fQA_ENERGY;
-  TProfile *fQA_CMN;
+  TH2D *fQA_ENERGY;
+  TProfile *fQA_CMN0;
+  TH2D *fQA_CMN0_N;
+  TH2D *fQA_CMN0_S[23];
+  TH1D *fQA_CMN1_N;
+  TH1D *fQA_CMN1;
 
-  void EstimateCommonNoise();
+  void EstimateCommonNoise0();
+  void EstimateCommonNoise1();
 };
 
 #endif /*__FDetectorMPC_H__*/
