@@ -11,6 +11,7 @@ noinst_HEADERS = \
 include_HEADERS = \
 	FTrace.h \
 	FAPD.h \
+	FADC.h \
 	FMP.h \
 	FDetectorMPC.h \
 	FDetectorBC.h \
@@ -20,6 +21,7 @@ libFaun_la_SOURCES = \
 	FUnpacker.cxx \
 	FTrace.cxx \
 	FAPD.cxx \
+	FADC.cxx \
 	FMP.cxx \
 	FDetectorMPC.cxx \
 	FDetectorBC.cxx \
@@ -39,6 +41,7 @@ libFaun_la_LIBADD = \
 Faun_Dict.C: \
 	FTrace.h \
 	FAPD.h \
+	FADC.h \
 	FMP.h \
 	FDetectorMPC.h \
 	FDetectorBC.h \

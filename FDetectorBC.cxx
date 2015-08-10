@@ -52,6 +52,6 @@ void FDetectorBC::Reset() {
 
 void FDetectorBC::Read() {
   fTraces[0]->SetRange(0,300,440,460);
-  double chk = fTraces[0]->ComputeSignal(fCommonNoise0);
+  /*double chk = */fTraces[0]->ComputeSignal(fCommonNoise0);
   //std::cout << "BC chk " << chk << std::endl;
 }

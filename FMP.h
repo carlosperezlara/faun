@@ -1,19 +1,19 @@
 #ifndef __FMP_H__
 #define __FMP_H__
 
+#include "FADC.h"
+
 class FMP {
  public:
   FMP();
   ~FMP();
-  void Fill(short h, short l) { fDataHigh=h; fDataLow=l; }
-  void SetGain(double g) { fGain = g; }
-  double Energy() { return fEnergy; }
+  void Fill(short h, short l) { fHigh.Set(h); fLow.Set(l); }
+  void SetGains(double h, double l) { fHigh.SetGain(h); fLow.SetGain(l); }
+  double Energy();
 
  protected:
-  short fDataHigh;
-  short fDataLow;
-  double fGain;
-  double fEnergy;
+  FADC fHigh;
+  FADC fLow;
 };
 
 #endif /*__FMP_H__*/

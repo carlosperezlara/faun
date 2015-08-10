@@ -24,8 +24,8 @@ void FDetectorMPC::Dump() {
 TList* FDetectorMPC::Init() {
   TList *output = new TList();
   output->SetName( "MPC" );
-  int x[23] = { -1, 0, +1, -2, -1, 0, +1, +2, -2, -1, 0, +1, +2, -2, -1, 0, +1, +2, -2, -1, 0, +1, +2 };
-  int y[23] = { +2, +2, +2, +1, +1, +1, +1, +1, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -2, -2, -2, -2, -2 };
+  int x[23] = {-2.5, 0.0,+2.5, -5.0,-2.5, 0.0,+2.5,+5.0, -5.0,-2.5, 0.0,+2.5,+5.0, -5.0,-2.5, 0.0,+2.5,+5.0, -5.0,-2.5, 0.0,+2.5,+5.0};
+  int y[23] = {+5.0,+5.0,+5.0, +2.5,+2.5,+2.5,+2.5,+2.5,  0.0, 0.0, 0.0, 0.0, 0.0, -2.5,-2.5,-2.5,-2.5,-2.5, -5.0,-5.0,-5.0,-5.0,-5.0};
   for(int i=0; i!=23; ++i) {
     fCrystalX.push_back(x[i]);
     fCrystalY.push_back(y[i]);
@@ -37,7 +37,7 @@ TList* FDetectorMPC::Init() {
     fQA_SIGNALS  = new TH2D( "MPC_SIGNALS", ";Crystal;Sgn",      23,-0.5,22.5,300,-99.5,2399.5);
     fQA_ENERGIES = new TH2D( "MPC_ENERGIES",";Crystal;Ene",      23,-0.5,22.5,300,-4.5,49.5);
     fQA_ENERGY   = new TH2D( "MPC_ENERGY",  ";crystal;Energy",   23,-0.5,22.5,300,-4.5,49.5);
-    fQA_CENTROID = new TH2D( "MPC_CENTROID",";<x>;<y>",          15,-2.5,+2.5,15,-2.5,+2.5);
+    fQA_CENTROID = new TH2D( "MPC_CENTROID",";<x>;<y>",          15,-6.25,+6.25,15,-6.25,+6.25);
     fQA_CMN0      = new TProfile( "MPC_CMN0", ";slice;<CMN0>", 1024,-0.5,1023.5,"s");
     fQA_CMN0_N    = new TH2D( "MPC_CMN0_N",   ";slice;N_{vec}",1024,-0.5,1023.5,25,-0.5,24.5);
     fQA_CMN1      = new TH1D( "MPC_CMN1",     ";CMN1",          200,-500,+500);

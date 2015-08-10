@@ -1,6 +1,7 @@
 libFaun.so:
 	g++ -c -Wall -Werror -fpic FTrace.cxx 
 	g++ -c -Wall -Werror -fpic FAPD.cxx 
+	g++ -c -Wall -Werror -fpic FADC.cxx 
 	g++ -c -Wall -Werror -fpic FMP.cxx 
 	g++ -c -Wall -Werror -fpic FDetectorMPC.cxx `root-config --libs` -I`root-config --incdir`
 	g++ -c -Wall -Werror -fpic FDetectorBC.cxx `root-config --libs` -I`root-config --incdir`

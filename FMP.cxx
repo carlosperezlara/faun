@@ -1,13 +1,15 @@
 #include "FMP.h"
 
 FMP::FMP(){
-  fDataHigh = -1;
-  fDataLow = -1;
-  fGain = -1.0;
-  fEnergy = -1.0;
 }
 
 FMP::~FMP(){
-
 }
 
+double FMP::Energy() {
+  short hen = fHigh.Get();
+  short len = fLow.Get();
+  if(hen<100) return fHigh.Energy();
+  if(len>50) return fLow.Energy();
+  return ( fHigh.Energy() + fLow.Energy() ) / 2.0;
+}
