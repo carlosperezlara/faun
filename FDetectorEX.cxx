@@ -42,9 +42,4 @@ double FDetectorEX::CentroidY(){
 }
 
 
-void FDetectorEX::EstimateCommonNoise0(){
-}
-
-void FDetectorEX::EstimateCommonNoise1(){
-}
 

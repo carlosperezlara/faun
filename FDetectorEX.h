@@ -31,23 +31,9 @@ class FDetectorEX{
   std::vector<FMP*> fMinipads;
   std::vector<double> fMinipadX;
   std::vector<double> fMinipadY;
-  std::vector<double> fCommonNoise0;
-  double fCommonNoise1;
+  std::vector<int> fMinipadX; //Layer index
   bool fCorrupt;
   double fEnergy;
-  TH2D *fQA_APDS;
-  TH2D *fQA_SIGNALS;
-  TH2D *fQA_ENERGIES;
-  TH2D *fQA_CENTROID;
-  TH2D *fQA_ENERGY;
-  TProfile *fQA_CMN0;
-  TH2D *fQA_CMN0_N;
-  TH2D *fQA_CMN0_S[23];
-  TH1D *fQA_CMN1_N;
-  TH1D *fQA_CMN1;
-
-  void EstimateCommonNoise0();
-  void EstimateCommonNoise1();
 };
 
 #endif /*__FDetectorEX_H__*/
