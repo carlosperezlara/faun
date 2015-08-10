@@ -26,7 +26,7 @@ TList* FDetectorBC::Init() {
   output->SetName( "BC" );
   fTraces.push_back(new FTrace());
   if(1) {
-    fQA_TRACE   = new TH2D( "BC_TRACE", ";slice;value", 1024,-0.5,1023.5, 100,0,4096);
+    fQA_TRACE   = new TH2D( "BC_TRACE", ";slice;value", 1024,-0.5,1023.5, 200,0,512);
     fQA_SIGNALS = new TH1D( "BC_SIGNALS", ";Signal",     300,-0.5,299.5);
     output->Add( fQA_TRACE );
     output->Add( fQA_SIGNALS );
@@ -51,6 +51,7 @@ void FDetectorBC::Reset() {
 }
 
 void FDetectorBC::Read() {
-  fTraces[0]->SetRange(0,150,200,675);
-  /*double chk = */fTraces[0]->ComputeSignal(fCommonNoise0);
+  fTraces[0]->SetRange(0,300,440,460);
+  double chk = fTraces[0]->ComputeSignal(fCommonNoise0);
+  //std::cout << "BC chk " << chk << std::endl;
 }

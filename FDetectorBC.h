@@ -15,6 +15,7 @@ class FDetectorBC{
   ~FDetectorBC();
   TList* Init();
   FTrace* GetTrace(unsigned int idx) {return idx<fTraces.size()?fTraces[idx]:NULL;}
+  double Signal() {return fTraces[0]->Signal();}
   void Read();
   void Reset();
   void Dump();

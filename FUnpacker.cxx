@@ -10,6 +10,7 @@
 #include "FAPD.h"
 #include "FMP.h"
 #include "FDetectorMPC.h"
+#include "FDetectorBC.h"
 #include "FMaze.h"
 
 using namespace std;
@@ -112,17 +113,17 @@ int process_event (Event * e) {
   }
 
   // SCINTILLATOR
-  FTrace theSCI;
+  FDetectorBC *theBC = FaunsMaze->BC();
   Packet *p1020 = e->getPacket(1020);
   if(p1020) {
     int samples = p1020->iValue(0, "SAMPLES"); 
     for( int i=0; i!=samples; ++i )
-      theSCI.Fill(-p1020->rValue(i,0));
+      theBC->GetTrace(0)->Fill(-p1020->rValue(i,0));
   }
   if(p1020) delete p1020;
 
   // MPC
-  FDetectorMPC* theMPC = FaunsMaze->MPC();
+  FDetectorMPC *theMPC = FaunsMaze->MPC();
   Packet *p2001 = e->getPacket(2001);
   if(p2001) {
     for(int c=0; c!=23; ++c) {
