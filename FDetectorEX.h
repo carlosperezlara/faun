@@ -15,6 +15,7 @@ class FDetectorEX{
   FDetectorEX();
   ~FDetectorEX();
   TList* Init();
+  void Fill(std::vector<short> v, short cid[2], short clk[2]);
   FMP* GetMinipad(unsigned int idx) {return idx<fMinipads.size()?fMinipads[idx]:NULL;}
   double Energy() {return fEnergy;}
   double CentroidX();
@@ -27,12 +28,18 @@ class FDetectorEX{
   bool Corrupt() {return fCorrupt;}
 
  protected:
-  std::vector<FMP*> fMinipads;
+  std::vector<FMP*>   fMinipads;
+  std::vector<short>    fMinipadK;
   std::vector<double> fMinipadX;
   std::vector<double> fMinipadY;
-  std::vector<int> fMinipadZ; //Layer index
+  std::vector<double> fMinipadZ;
   bool fCorrupt;
   double fEnergy;
+  short fClkFor;
+  short fClkBck;
+  short fCIDFor;
+  short fCIDBck;
+
 };
 
 #endif /*__FDetectorEX_H__*/

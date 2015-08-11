@@ -21,7 +21,7 @@ ofstream fileHybrid("Hybrid.log");
 ofstream fileMPCEX0("MPCEX0.log");
 FMaze *FaunsMaze;
 
-int b2G(int num) {
+int b2G(short num) {
   return (num >> 1) ^ num;
 }
 
@@ -137,82 +137,122 @@ int process_event (Event * e) {
   if(p2001) delete p2001;
 
   // EX
-  vector<int> expkt;
-  int cllid[2];
-  int clock[2];
-  bool unique_p1030 = false;
+  vector<short> expkt;
+  short cellid[2];
+  short clock[2];
+  int data[4000];
+  int bytes[16000];
+  int nw;
+  int idx;
+
+  bool unique_p1030 = true;
   Packet *p1030 = e->getPacket(1030);
   if(p1030) {
-    unique_p1030 = UnpackEX(p1030,&expkt,cllid[0],clock[0]);
+    p1030->fillIntArray(data,4000,&nw,"RAW");
+    fileMPCEX0 << "******" << endl;
+    fileMPCEX0 << "MPCEX  NW " << nw << endl;
+    idx=0;
+    for(int i=0; i!=nw; ++i) {
+      int n = data[i];
+      bytes[idx+3] = (n >> 24) & 0xFF;
+      bytes[idx+2] = (n >> 16) & 0xFF;
+      bytes[idx+1] = (n >> 8) & 0xFF;
+      bytes[idx+0] = n & 0xFF;
+      idx+=4;
+    }
+    fileMPCEX0 << "0: ";
+    for(int i=0; i<nw*4; ++i) {
+      fileMPCEX0 << hex << setfill('0') << setw(2) << bytes[i] << " ";
+      if((i+1)%16==0) fileMPCEX0 << endl << dec << i+1 << ":" << hex;
+    }
+    fileMPCEX0 << dec << endl;
+    vector<int> starts;
+    starts.push_back(32);
+    cellid[0] = bytes[31];
+    int index = 31+128;
+    while(index<4*nw && unique_p1030 && starts.size()<8) {
+      int count=0;
+      int match=0;
+      for(int i=index; i!=index+7; ++i)
+	if(bytes[i]==cellid[0]) {
+	  match = i;
+	  count++;
+	}
+      if(count!=1) {
+	unique_p1030 = false;
+      } else {
+	starts.push_back(match+1);
+	index = match+128;
+      }
+    }
+    if(starts.size()!=8) unique_p1030=false;
+    clock[0] = bytes[4*nw-8] & 0x7; //clock = (clock+3)%8;
+    if(unique_p1030) {
+      for(int i=0; i!=starts.size(); ++i)
+	for(int j=starts[i]; j!=starts[i]+128; ++j)
+	  expkt.push_back( bytes[j] );
+    }
+    cellid[0] = b2G( cellid[0] );
     delete p1030;
   }
-  bool unique_p1031 = false;
+  bool unique_p1031 = true;
   Packet *p1031 = e->getPacket(1031);
   if(p1031) {
-    unique_p1031 = UnpackEX(p1031,&expkt,cllid[1],clock[1]);
+    p1031->fillIntArray(data,4000,&nw,"RAW");
+    fileMPCEX0 << "******" << endl;
+    fileMPCEX0 << "MPCEX  NW " << nw << endl;
+    idx=0;
+    for(int i=0; i!=nw; ++i) {
+      int n = data[i];
+      bytes[idx+3] = (n >> 24) & 0xFF;
+      bytes[idx+2] = (n >> 16) & 0xFF;
+      bytes[idx+1] = (n >> 8) & 0xFF;
+      bytes[idx+0] = n & 0xFF;
+      idx+=4;
+    }
+    fileMPCEX0 << "0: ";
+    for(int i=0; i<nw*4; ++i) {
+      fileMPCEX0 << hex << setfill('0') << setw(2) << bytes[i] << " ";
+      if((i+1)%16==0) fileMPCEX0 << endl << dec << i+1 << ":" << hex;
+    }
+    fileMPCEX0 << dec << endl;
+    vector<int> starts;
+    starts.push_back(32);
+    cellid[1] = bytes[31];
+    int index = 31+128;
+    while(index<4*nw && unique_p1031 && starts.size()<8) {
+      int count=0;
+      int match=0;
+      for(int i=index; i!=index+7; ++i)
+	if(bytes[i]==cellid[1]) {
+	  match = i;
+	  count++;
+	}
+      if(count!=1) {
+	unique_p1031 = false;
+      } else {
+	starts.push_back(match+1);
+	index = match+128;
+      }
+    }
+    if(starts.size()!=8) unique_p1031=false;
+    clock[1] = bytes[4*nw-8] & 0x7; //clock = (clock+3)%8;
+    if(unique_p1031) {
+      for(int i=0; i!=starts.size(); ++i)
+	for(int j=starts[i]; j!=starts[i]+128; ++j)
+	  expkt.push_back( bytes[j] );
+    }
+    cellid[1] = b2G( cellid[1] );
     delete p1031;
   }
-  cout << "****** EX vector_n:" << expkt.size() << " " << cllid[0] << " " << cllid[1] << "|" << clock[0] << " " << clock[1] << endl; 
-  //FDetectorEX *theEX = FaunsMaze->EX();
-  //theEX->Fill( expkt, cllid, clock );
+  if(unique_p1030&&unique_p1031) {
+    fileMPCEX0 << "****** EX UNIQUE vector_n:" << expkt.size() << "|" << cellid[0] << " " << cellid[1] << "|" << clock[0] << " " << clock[1] << endl << endl;
+    FDetectorEX *theEX = FaunsMaze->EX();
+    theEX->Fill( expkt, cellid, clock );
+  }
 
   // Walk the maze
   FaunsMaze->Exec();
 
   return 0;
-}
-
-bool UnpackEX( Packet *p, vector<double> *expkt, int& cellid, int& clock ) {
-  bool unique = true;
-  int data[4000];
-  int nw;
-  p->fillIntArray(data,4000,&nw,"RAW");
-  fileMPCEX0 << "******" << endl;
-  fileMPCEX0 << "MPCEX  NW " << nw << endl;
-  int INDEXER=0;
-  int bytes[16000];
-  for(int i=0; i!=nw; ++i) {
-    int n = data[i];
-    bytes[INDEXER+3] = (n >> 24) & 0xFF;
-    bytes[INDEXER+2] = (n >> 16) & 0xFF;
-    bytes[INDEXER+1] = (n >> 8) & 0xFF;
-    bytes[INDEXER+0] = n & 0xFF;
-    INDEXER+=4;
-  }
-  fileMPCEX0 << "0: ";
-  for(int i=0; i<nw*4; ++i) {
-    fileMPCEX0 << hex << setfill('0') << setw(2) << bytes[i] << " ";
-    if((i+1)%16==0) fileMPCEX0 << endl << dec << i+1 << ":" << hex;
-  }
-  fileMPCEX0 << dec << endl;
-  vector<int> starts;
-  starts.push_back(32);
-  cellid = bytes[31];
-  int index = 31+128;
-  while(index<4*nw && unique && starts.size()<8) {
-    int count=0;
-    int match=0;
-    for(int i=index; i!=index+7; ++i)
-      if(bytes[i]==cellid) {
-	match = i;
-	count++;
-      }
-    if(count!=1) {
-      unique = false;
-    } else {
-      starts.push_back(match+1);
-      index = match+128;
-    }
-  }
-  if(starts.size()!=8) unique=false;
-  clock = bytes[4*nw-8] & 0x7; //clock = (clock+3)%8;
-  if(unique) {
-    for(int i=0; i!=starts.size(); ++i)
-      for(int j=starts[i]; j!=starts[i]+128; ++j)
-	expkt->push_back( bytes[j] );
-  } else {
-    fileMPCEX0 << "Not Unique Result from USB0...abort event " << entries << endl;
-  }
-  cellid = b2G( cellid );
-  return unique;
 }

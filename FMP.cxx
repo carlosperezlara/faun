@@ -1,6 +1,7 @@
 #include "FMP.h"
 
 FMP::FMP(){
+  Reset();
 }
 
 FMP::~FMP(){
