@@ -1,4 +1,3 @@
-
 #ifndef __FDetectorEX_H__
 #define __FDetectorEX_H__
 
@@ -31,7 +30,7 @@ class FDetectorEX{
   std::vector<FMP*> fMinipads;
   std::vector<double> fMinipadX;
   std::vector<double> fMinipadY;
-  std::vector<int> fMinipadX; //Layer index
+  std::vector<int> fMinipadZ; //Layer index
   bool fCorrupt;
   double fEnergy;
 };

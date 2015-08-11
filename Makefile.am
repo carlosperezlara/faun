@@ -15,6 +15,7 @@ include_HEADERS = \
 	FMP.h \
 	FDetectorMPC.h \
 	FDetectorBC.h \
+	FDetectorEX.h \
 	FMaze.h
 
 libFaun_la_SOURCES = \
@@ -25,6 +26,7 @@ libFaun_la_SOURCES = \
 	FMP.cxx \
 	FDetectorMPC.cxx \
 	FDetectorBC.cxx \
+	FDetectorEX.cxx \
 	FMaze.cxx \
 	Faun_Dict.C
 
@@ -45,6 +47,7 @@ Faun_Dict.C: \
 	FMP.h \
 	FDetectorMPC.h \
 	FDetectorBC.h \
+	FDetectorEX.h \
 	FMaze.h \
 	FaunLinkDef.h
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^

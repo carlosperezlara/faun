@@ -11,6 +11,7 @@
 #include "FMP.h"
 #include "FDetectorMPC.h"
 #include "FDetectorBC.h"
+#include "FDetectorEX.h"
 #include "FMaze.h"
 
 using namespace std;
@@ -135,6 +136,7 @@ int process_event (Event * e) {
   if(p2001) delete p2001;
 
   // EX
+  FDetectorEX *theEX = FaunsMaze->EX();
   Packet *p1030 = e->getPacket(1030);
   int cellIDF=-1;
   if(p1030) {

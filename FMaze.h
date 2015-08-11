@@ -3,6 +3,7 @@
 
 #include "FDetectorBC.h"
 #include "FDetectorMPC.h"
+#include "FDetectorEX.h"
 
 #include "TList.h"
 #include "TH2D.h"
@@ -13,6 +14,7 @@ class FMaze{
   ~FMaze();
   FDetectorBC* BC() {return fBC;}
   FDetectorMPC* MPC() {return fMPC;}
+  FDetectorEX* EX() {return fEX;}
   void Init();
   void Reset();
   void Exec();
@@ -23,6 +25,7 @@ class FMaze{
   TList *fForest;
   FDetectorBC *fBC;
   FDetectorMPC *fMPC;
+  FDetectorEX *fEX;
   TH2D *fQA_BC_MPC;
 };
 

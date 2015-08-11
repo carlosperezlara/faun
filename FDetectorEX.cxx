@@ -14,7 +14,7 @@ FDetectorEX::FDetectorEX() {
 FDetectorEX::~FDetectorEX() {
 }
 
-TList* FDetector::Init(){ //FDetector has a funtion named Init which returns TList
+TList* FDetectorEX::Init(){ //FDetector has a funtion named Init which returns TList
   TList *myQA = new TList();
   return myQA;
 }

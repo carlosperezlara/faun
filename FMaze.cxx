@@ -2,16 +2,19 @@
 #include "FMaze.h"
 #include "FDetectorBC.h"
 #include "FDetectorMPC.h"
+#include "FDetectorEX.h"
 
 #include "TList.h"
 
 FMaze::FMaze() {
   fBC = new FDetectorBC();
   fMPC = new FDetectorMPC();
+  fEX = new FDetectorEX();
 }
 FMaze::~FMaze() {
   delete fMPC;
   delete fBC;
+  delete fEX;
 }
 
 void FMaze::Dump() {
@@ -23,6 +26,10 @@ void FMaze::Dump() {
   std::cout << "===========" << std::endl;
   fBC->Dump();
   std::cout << std::endl;
+  std::cout << "EX detector" << std::endl;
+  std::cout << "===========" << std::endl;
+  fEX->Dump();
+  std::cout << std::endl;
 }
 
 void FMaze::Init() {
@@ -30,6 +37,7 @@ void FMaze::Init() {
   fForest->SetOwner();
   fForest->Add( fBC->Init() );
   fForest->Add( fMPC->Init() );
+  fForest->Add( fEX->Init() );
   TList *myQA = new TList();
   fQA_BC_MPC = new TH2D("fQA_BC_MPC",";BC Signal; MPC Energy",250,0,250,120,0,60);
   myQA->Add( fQA_BC_MPC );
@@ -44,7 +52,7 @@ void FMaze::WriteOutput(const char *out) {
 void FMaze::Reset() {
   fBC->Reset();
   fMPC->Reset();
-  fQA_BC_MPC->Fill( fBC->Signal(), fMPC->Energy() );
+  fEX->Reset();
 }
 
 void FMaze::Exec() {
@@ -52,9 +60,12 @@ void FMaze::Exec() {
   if(fBC->Corrupt()) return;
   fMPC->ReadEnergy();
   if(fMPC->Corrupt()) return;
+  fEX->ReadEnergy();
+  if(fEX->Corrupt()) return;
 
   fBC->DoQA();
   fMPC->DoQA();
+  fEX->DoQA();
 
   fQA_BC_MPC->Fill( fBC->Signal(), fMPC->Energy() );
 }
