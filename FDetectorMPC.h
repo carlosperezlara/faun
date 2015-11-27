@@ -20,13 +20,14 @@ class FDetectorMPC{
   double CentroidX();
   double CentroidY();
   void ReadEnergy();
-  void InputGains(const char *);
+  void InputGains();
   void Reset();
   void Dump();
   void DoQA();
   bool Corrupt() {return fCorrupt;}
 
  protected:
+  bool fDOQA;
   std::vector<FAPD*> fCrystals;
   std::vector<double> fCrystalX;
   std::vector<double> fCrystalY;
@@ -34,14 +35,15 @@ class FDetectorMPC{
   double fCommonNoise1;
   bool fCorrupt;
   double fEnergy;
-  TH2D *fQA_APDS;
   TH2D *fQA_SIGNALS;
   TH2D *fQA_ENERGIES;
   TH2D *fQA_CENTROID;
   TH2D *fQA_ENERGY;
   TProfile *fQA_CMN0;
   TH2D *fQA_CMN0_N;
+  TH2D *fQA_S[23];
   TH2D *fQA_CMN0_S[23];
+  TH2D *fQA_CMN0_BL;
   TH1D *fQA_CMN1_N;
   TH1D *fQA_CMN1;
 

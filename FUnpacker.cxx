@@ -37,6 +37,8 @@ int plistopen(const char *out) {
 }
 
 int process_event (Event * e) {
+  static int nev = -1;
+  nev++;
   FaunsMaze->Reset();
   if(1) {
     fileEvType.close();
@@ -251,6 +253,7 @@ int process_event (Event * e) {
     theEX->Fill( expkt, cellid, clock );
   }
 
+  //printf("Event Number %d\n", nev);
   // Walk the maze
   FaunsMaze->Exec();
 

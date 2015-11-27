@@ -6,7 +6,9 @@
 #include "FDetectorEX.h"
 
 #include "TList.h"
+#include "TH1D.h"
 #include "TH2D.h"
+#include "TNtuple.h"
 
 class FMaze{
  public:
@@ -26,7 +28,11 @@ class FMaze{
   FDetectorBC *fBC;
   FDetectorMPC *fMPC;
   FDetectorEX *fEX;
+  TNtuple *fMPCtree;
+  TH1D *fQA_Events;
   TH2D *fQA_BC_MPC;
+  TH2D *fQA_EX_MPC;
+  TH1D *fQA_TotalE;
 };
 
 #endif /*__FMAZE_H__*/
