@@ -35,18 +35,20 @@ TList* FDetectorMPC::Init() {
       output->Add( fQA_S[i] );
       output->Add( fQA_CMN0_S[i] );
     }
-    fQA_CMN0_BL = new TH2D( "MPC_CMN0_BL",";crystal;baseline",23,-0.5,22.5,200,1900.5,2100.5);
+    fQA_FSIGNALS  = new TH2D( "MPC_FSIGNALS", ";Crystal;Sgn",      23,-0.5,22.5,300,-99.5,2399.5);
+    output->Add( fQA_FSIGNALS );
+    fQA_CMN0_BL = new TH2D( "MPC_CMN0_BL",";crystal;baseline",23,-0.5,22.5,300,1800.5,2100.5);
     output->Add( fQA_CMN0_BL );
     fQA_SIGNALS  = new TH2D( "MPC_SIGNALS", ";Crystal;Sgn",      23,-0.5,22.5,300,-99.5,2399.5);
+    output->Add( fQA_SIGNALS );
     fQA_ENERGIES = new TH2D( "MPC_ENERGIES",";Crystal;Ene",      23,-0.5,22.5,300,-4.5,49.5);
+    output->Add( fQA_ENERGIES );
     fQA_ENERGY   = new TH2D( "MPC_ENERGY",  ";crystal;Energy",   23,-0.5,22.5,300,-4.5,49.5);
     fQA_CENTROID = new TH2D( "MPC_CENTROID",";<x>;<y>",          15,-6.25,+6.25,15,-6.25,+6.25);
-    fQA_CMN0      = new TProfile( "MPC_CMN0", ";slice;<CMN0>", 1024,-0.5,1023.5,"s");
-    fQA_CMN0_N    = new TH2D( "MPC_CMN0_N",   ";slice;N_{vec}",1024,-0.5,1023.5,25,-0.5,24.5);
+    fQA_CMN0      = new TH2D( "MPC_CMN0", ";slice;<CMN0>", 1024,-0.5,1023.5,400,-150,150);
+    fQA_CMN0_N    = new TH1D( "MPC_CMN0_N",   ";crystalindex",23,-0.5,22.5);
     fQA_CMN1      = new TH1D( "MPC_CMN1",     ";CMN1",          200,-500,+500);
     fQA_CMN1_N    = new TH1D( "MPC_CMN1_N",   ";N_{vec}",        24,-0.5,23.5);
-    output->Add( fQA_SIGNALS );
-    output->Add( fQA_ENERGIES );
     output->Add( fQA_ENERGY );
     output->Add( fQA_CENTROID );
     output->Add( fQA_CMN0 );
@@ -59,21 +61,18 @@ TList* FDetectorMPC::Init() {
 
 void FDetectorMPC::DoQA() {
   if(fDOQA)
-    for(unsigned int i=0; i!=fCrystals.size(); ++i)
+    for(unsigned int i=0; i!=fCrystals.size(); ++i) {
       for(unsigned int j=0; j!=1024; ++j) {
 	fQA_S[i]->Fill(j,fCrystals[i]->GetDataSlice(j));
 	fQA_CMN0_S[i]->Fill(j,fCrystals[i]->GetDataSlice(j)-fCommonNoise0[j]);
       }
-  if(fQA_SIGNALS)
-    for(unsigned int i=0; i!=fCrystals.size(); ++i)
       fQA_SIGNALS->Fill(i,fCrystals[i]->Signal());
-  if(fQA_ENERGIES)
-    for(unsigned int i=0; i!=fCrystals.size(); ++i)
       fQA_ENERGIES->Fill(i,fCrystals[i]->Energy());
+    }
   if(fQA_ENERGY) {
     double sum=0.0;
     for(unsigned int i=0; i!=fCrystals.size(); ++i) {
-      sum += fCrystals[i]->Energy();
+      sum += fCrystals[ fOrd[i] ]->Energy();
       fQA_ENERGY->Fill(i,sum);
     }
   }
@@ -86,43 +85,179 @@ void FDetectorMPC::DoQA() {
     fQA_CMN1->Fill(fCommonNoise1);
 }
 
-void FDetectorMPC::EstimateCommonNoise0() {
-  fCommonNoise0.clear();
+int FDetectorMPC::getneig(int nei[23], int sorted) {
+  //   00 01 02
+  //03 04 05 06 07
+  //08 09 10 11 12
+  //13 14 15 16 17
+  //18 19 20 21 22
+  std::vector<int> list;
+  // n0 n1 n2
+  // n3 XX n4
+  // n5 n6 n7
+  for(int tt=0; tt!=sorted; ++tt) {
+    int t = fOrd[tt];
+    //n0
+    if(t==5||t==6||t==7) list.push_back( t-5 );
+    if(t==9||t==10||t==11||t==12||
+       t==14||t==15||t==16||t==17||
+       t==19||t==20||t==21||t==22) list.push_back( t-6 );
+    //n1
+    if(t==4||t==5||t==6) list.push_back( t-4 );
+    if(t>7) list.push_back( t-5 );
+    //n2
+    if(t==3||t==4||t==5) list.push_back( t-3 );
+    if(t==8||t==9||t==10||t==11||
+       t==13||t==14||t==15||t==16||
+       t==18||t==19||t==20||t==21) list.push_back( t-4 );
+    //n3
+    if(t==1||t==2||
+       t==4||t==5||t==6||t==7||
+       t==9||t==10||t==11||t==12||
+       t==14||t==15||t==16||t==17||
+       t==19||t==20||t==21||t==22)
+      list.push_back( t-1 );
+    //n4
+    if(t==0||t==1||
+       t==3||t==4||t==5||t==6||
+       t==8||t==9||t==10||t==11||
+       t==13||t==14||t==15||t==16||
+       t==18||t==19||t==20||t==21)
+      list.push_back( t+1 );
+    //n5
+    if(t==0||t==1||t==2) list.push_back( t+3 );
+    if(t==4||t==5||t==6||t==7||
+       t==9||t==10||t==11||t==12||
+       t==14||t==15||t==16||t==17) list.push_back( t+4 );
+    //n6
+    if(t==0||t==1||t==2) list.push_back( t+4 );
+    if(t>2&&t<18) list.push_back( t+5 );
+    //n7
+    if(t==0||t==1||t==2) list.push_back( t+5 );
+    if(t==3||t==4||t==5||t==6||
+       t==8||t==9||t==10||t==11||
+       t==13||t==14||t==15||t==16) list.push_back( t+6 );
+  }
+  /*
+  std::cout << list.size() << "::";
+  for(int j=0; j!=list.size(); ++j)
+    std::cout << list[j] << "|";
+  std::cout << std::endl;
+  */
+  std::vector<int>::iterator it;
+  sort(list.begin(),list.end());
+  it = unique(list.begin(),list.end());
+  list.resize( distance(list.begin(),it) );
+  /*
+  std::cout << list.size() << "::";
+  for(int j=0; j!=list.size(); ++j)
+    std::cout << list[j] << "|";
+  std::cout << std::endl;
+  */
+  for(int i=0; i!=sorted; ++i)
+    for(int j=0; j!=list.size(); ++j)
+      if(fOrd[i]==list[j]) list[j] = 99;
+  sort(list.begin(),list.end());
+  it = unique(list.begin(),list.end());
+  list.resize( distance(list.begin(),it) );
+  /*
+  std::cout << list.size() << "::";
+  for(int j=0; j!=list.size(); ++j)
+    std::cout << list[j] << "|";
+  std::cout << std::endl;
+  */
+  int nn=0;
+  for(int j=0; j!=list.size(); ++j) 
+    if(list[j]!=99)
+      nei[nn++] = list[j];
+  return nn;
+}
+
+void FDetectorMPC::setup() {
   // estimate baseline for each crystal in this event;
-  float baseline[23];
   TH1D *bl = new TH1D("bl","bl",100,-0.5,99.5);
   TF1 *fbl = new TF1("fbl","[0]");
   for(int i=0; i!=23; ++i) {
     for(int j=0; j!=100; ++j)
-      bl->SetBinContent( i+1, j+1, fCrystals[i]->GetDataSlice(j) );
+      bl->SetBinContent( j+1, fCrystals[i]->GetDataSlice(j) );
     fbl->SetParameter(0,1950);
-    bl->Fit( "fbl", "QWW" );
-    baseline[i] = fbl->GetParameter(0);
-    fQA_CMN0_BL->Fill(i,baseline[i]);
+    bl->Fit( "fbl", "QLN" );
+    fBaseline[i] = fbl->GetParameter(0);
+    fQA_CMN0_BL->Fill(i,fBaseline[i]);
     bl->Reset();
   }
   delete bl;
   delete fbl;
+  /*
+  std::cout << "BASELINE:" << std::endl;
+  for(int ii=0; ii!=23; ++ii)
+    std::cout << fBaseline[ii] << "|";
+  std::cout << std::endl;
+  */
+  //fast estimation of the signal for each crystal in this event
+  float signal[23];
+  for(int i=0; i!=23; ++i) {
+    signal[i] = 0;
+    for(int j=250; j!=300; ++j)
+      signal[i] += (fCrystals[i]->GetDataSlice(j)-fBaseline[i])/50.;
+    fQA_SIGNALS->Fill(i,signal[i]);
+  }
+  /*
+  std::cout << "SIGNAL:" << std::endl;
+  for(int ii=0; ii!=23; ++ii)
+    std::cout << signal[ii] << "|";
+  std::cout << std::endl;
+  */
+  //sorting crystals by beam proximity
+  int neig[23];
+  for(int i=1; i!=23; ++i)
+    if(signal[i]>signal[fOrd[0]])
+      fOrd[0] = i;
+  int nord=1, nneig;
+  while( nord<23 ) {
+    /*
+    std::cout << "NUMBER OF SORTED:" << nord << std::endl;
+    for(int ii=0; ii!=nord; ++ii)
+      std::cout << fOrd[ii] << "|";
+    std::cout << std::endl;
+    */
+    nneig = getneig(neig,nord);
+    /*
+    std::cout << " NUMBER OF NEIGHBOURS:" << nneig << std::endl;
+    for(int ii=0; ii!=nneig; ++ii)
+      std::cout << neig[ii] << "|";
+    std::cout << std::endl;
+    */
+    if(nneig>0) {
+      fOrd[nord] = neig[0];
+      float maxSgn = signal[ fOrd[nord] ];
+      for(int i=1; i!=nneig; ++i) {
+	int pk = neig[i];
+	if(signal[pk]>maxSgn) {
+	  maxSgn = signal[pk];
+	  fOrd[ nord ] = pk;
+	}
+      }
+      ++nord;
+    }
+  }
+}
 
-  int cut[23] = { 2020, 2035, 2088, 2031, 2035, 2035, 2057, 2028, 1999, 2023,
-		  2026, 2055, 2040, 2017, 2031, 2026, 2074, 2077, 2027, 2145,
-		  2068, 2093, 2078 };
+void FDetectorMPC::EstimateCommonNoise0() {
+  fCommonNoise0.clear();
   std::vector<double> mylist;
   for(int j=0; j!=1024; ++j) {
     mylist.clear();
-    for(std::vector<FAPD*>::size_type i = 0; i!=fCrystals.size(); ++i) {
-      double test = fCrystals[i]->GetDataSlice(j) - baseline[i];
-      mylist.push_back( test );
+    float delta = 0;
+    //delta += fCrystals[ fOrd[20] ]->GetDataSlice(j) - fBaseline[ fOrd[20] ];
+    //fQA_CMN0_N->Fill( fOrd[20] );
+    //fCommonNoise0.push_back( delta );
+    int ncfcpn = 8;
+    for(int fl=23-ncfcpn; fl!=23; ++fl) {
+      delta += fCrystals[ fOrd[fl] ]->GetDataSlice(j) - fBaseline[ fOrd[fl] ];
+      fQA_CMN0_N->Fill( fOrd[fl] );
     }
-    double noise = 0;
-    unsigned int size = mylist.size();
-    if(fQA_CMN0_N)
-      fQA_CMN0_N->Fill(j,size);
-    if(size>0) {
-      sort(mylist.begin(),mylist.end());
-      noise = mylist[3];//23-4x4
-    }
-    fCommonNoise0.push_back( noise );
+    fCommonNoise0.push_back( delta/ncfcpn );
   }
   return;
 }
@@ -165,7 +300,8 @@ void FDetectorMPC::ReadEnergy() {
       return;
     }
   }
-  //
+  // computes baseline and sort
+  setup();
   // there is noise from the readout common to each time slice
   // from the variation 
   EstimateCommonNoise0();

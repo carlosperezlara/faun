@@ -49,9 +49,9 @@ void FMaze::Init() {
   fQA_TotalE = new TH1D("fQA_TotalE","MPC+EX Energy (GeV); Energy (GeV)",250,0,60);
   myQA->Add( fQA_TotalE );
   fForest->Add( myQA );
-  fMPCtree = new TNtuple("MPCtree","MPCtree",
-			 "c0:c1:c2:c3:c4:c5:c6:c7:c8:c9:c10:c11:c12:c13:c14:c15:c16:c17:c18:c19:c20:c21:c22:c23");
-  fForest->Add( fMPCtree );
+  //fMPCtree = new TNtuple("MPCtree","MPCtree",
+  //			 "c0:c1:c2:c3:c4:c5:c6:c7:c8:c9:c10:c11:c12:c13:c14:c15:c16:c17:c18:c19:c20:c21:c22:c23");
+  //fForest->Add( fMPCtree );
   Dump();
 }
 

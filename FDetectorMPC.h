@@ -35,20 +35,25 @@ class FDetectorMPC{
   double fCommonNoise1;
   bool fCorrupt;
   double fEnergy;
+  float fBaseline[23];
+  int fOrd[23];
+  TH2D *fQA_FSIGNALS;
   TH2D *fQA_SIGNALS;
   TH2D *fQA_ENERGIES;
   TH2D *fQA_CENTROID;
   TH2D *fQA_ENERGY;
-  TProfile *fQA_CMN0;
-  TH2D *fQA_CMN0_N;
+  TH2D *fQA_CMN0;
+  TH1D *fQA_CMN0_N;
   TH2D *fQA_S[23];
   TH2D *fQA_CMN0_S[23];
   TH2D *fQA_CMN0_BL;
   TH1D *fQA_CMN1_N;
   TH1D *fQA_CMN1;
 
+  void setup();
   void EstimateCommonNoise0();
   void EstimateCommonNoise1();
+  int getneig(int b[23], int nb);
 };
 
 #endif /*__FDetectorMPC_H__*/
