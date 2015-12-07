@@ -24,7 +24,7 @@ class FDetectorBC{
 
  protected:
   std::vector<FTrace*> fTraces;
-  std::vector<double> fCommonNoise0;
+  std::vector<float> fCommonNoise0;
   bool fCorrupt;
   TH2D *fQA_TRACE;
   TH1D *fQA_SIGNALS;

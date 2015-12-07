@@ -6,19 +6,23 @@ class FTrace {
  public:
   FTrace();
   virtual ~FTrace();
-  void Fill(double val) { fData.push_back(val); }
+  void Fill(float val) { fData.push_back(val); }
   void Reset() {fData.clear(); }
-  double Signal() { return fSignal; }
+  unsigned int NumberOfSlices() {return fData.size(); }
+  float Signal() { return fSignal; }
+  float Baseline() { return fBaseline; }
   void SetRange(int a,int b,int c,int d) {
     fRange[0]=a; fRange[1]=b; fRange[2]=c; fRange[3]=d;
   }
-  virtual int ComputeSignal(std::vector<double>,double res=0);
-  double GetDataSlice(unsigned int idx) {return idx<fData.size()?fData[idx]:0;}
+  virtual float ComputeBaseline(const std::vector<float>& noise);
+  virtual float ComputeSignal(const std::vector<float>& noise, const float& res=0.0);
+  float GetDataSlice(unsigned int idx) {return idx<fData.size()?fData[idx]:0;}
 
  protected:
-  std::vector<double> fData;
+  std::vector<float> fData;
   unsigned int fRange[4];
-  double fSignal;
+  float fSignal;
+  float fBaseline;
 };
 
 #endif /*__FTRACE_H__*/
