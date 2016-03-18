@@ -30,8 +30,10 @@ TList* FDetectorMPC::Init() {
   output->SetName( "MPC" );
   if(fDOQA) {
     for(int i=0; i!=23; ++i) {
+      fQA_F100[i]  = new TH2D( Form("MPC_F100_%d",i), ";ev;adc",100,-0.5,99.5,1024,-0.5,1023.5);
       fQA_S[i]  = new TH2D( Form("MPC_CRYSTAL%d",i), ";ts;adc",1024,-0.5,1023.5,4106,-0.5,4105.5);
       fQA_CMN0_S[i]  = new TH2D( Form("MPC_CMN0_CRYSTAL%d",i), ";ts;adc-cpn",1024,-0.5,1023.5,4106,-0.5,4105.5);
+      output->Add( fQA_F100[i] );
       output->Add( fQA_S[i] );
       output->Add( fQA_CMN0_S[i] );
     }
@@ -58,9 +60,13 @@ TList* FDetectorMPC::Init() {
 }
 
 void FDetectorMPC::DoQA() {
+  static int proEvents=0;
   if(fDOQA)
     for(unsigned int i=0; i!=fCrystals.size(); ++i) {
+      float weight=0;
       for(unsigned int j=0; j!=1024; ++j) {
+	weight = fCrystals[i]->GetDataSlice(j);
+	fQA_F100[i]->Fill(proEvents,j,weight);
 	fQA_S[i]->Fill(j,fCrystals[i]->GetDataSlice(j));
 	fQA_CMN0_S[i]->Fill(j,fCrystals[i]->GetDataSlice(j)-fCommonNoise0[j]);
       }
@@ -82,6 +88,8 @@ void FDetectorMPC::DoQA() {
       fQA_CMN0->Fill(i,fCommonNoise0[i]);
   if(fQA_CMN1)
     fQA_CMN1->Fill(fCommonNoise1);
+
+  proEvents++;
 }
 
 int FDetectorMPC::getneig(int nei[23], int sorted) {
@@ -255,19 +263,16 @@ void FDetectorMPC::ComputeSignals() {
 void FDetectorMPC::ReadEnergy() {
   // each crystal has a trace amplitude that goes from 0 to 4096
   // the baseline is at around 2000
-  // however there are events where the signal is at 0
-  // this procedure removes those
-  /*
+
+  // this procedure finds outliers and expectorates event
   for(std::vector<FAPD*>::size_type i = 0; i!=fCrystals.size(); ++i) {
     float sumJ=0;
     for(unsigned int j=0; j!=1024; ++j)
-      sumJ +=fCrystals[i]->GetDataSlice(j) / 1024.0;
-    if( sumJ < 100 ) {
-      fCorrupt = true;
-      return;
-    }
+      if( fCrystals[i]->GetDataSlice(j)<100 || fCrystals[i]->GetDataSlice(j)>4090 ) {
+	fCorrupt = true;
+	return;
+      }
   }
-  */
 
   fCommonNoise0.clear();
   fCommonNoise1 = 0;

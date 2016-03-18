@@ -44,6 +44,7 @@ class FDetectorMPC{
   TH2D *fQA_ENERGY;
   TH2D *fQA_CMN0;
   TH1D *fQA_CMN0_N;
+  TH2D *fQA_F100[23];
   TH2D *fQA_S[23];
   TH2D *fQA_CMN0_S[23];
   TH1D *fQA_CMN1_N;
